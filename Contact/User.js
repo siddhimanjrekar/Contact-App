@@ -10,7 +10,6 @@ class User {
         this.isAdmin = isAdmin
         this.age=age
         this.contacts = []
-        this.contactInfo = []
     }
 
     static newAdmin(fname, lname, gender,age){
@@ -41,11 +40,11 @@ class User {
         if (gender != 'M' && gender != 'F' && gender.toUpperCase() != 'MALE' && gender.toUpperCase() != 'FEMALE'){
             return "Invalid Gender"
         }
-        if (typeof age != "number") {
-            return "Invalid age"
-        }
         if (!this.isAdmin){
             return "Not Admin"
+        }
+        if (typeof age != "number") {
+            return "Invalid age"
         }
 
         let fullname = fname + " " + lname
@@ -62,9 +61,9 @@ class User {
     }
 
     findUser(ID){
-        if (!this.isAdmin){
-            return "Accessible to Administrators Only"
-        }
+        // if (!this.isAdmin){
+        //     return "Accessible to Administrators Only"
+        // }
         for (let i=0; i < User.allUsers.length; i++) {
             if (User.allUsers[i].ID == ID){
                 return [i, true]
@@ -93,16 +92,12 @@ class User {
                 if (newValue != 'M' && newValue != 'F' && newValue.toUpperCase() != 'MALE' && newValue.toUpperCase() != 'FEMALE'){
                     return "Invalid Gender"
                 }
-            case "age":
-                if (typeof(age) != 'number'){
-                    return "Invalid age"
-                }
                 User.allUsers[index].gender = newValue
                 return User.allUsers[index]
             default:
                 return "Invalid Parameter"
         }
-        
+        // return User.allUsers[index]
     }
 
     deleteUser(ID){
@@ -126,7 +121,7 @@ class User {
             return "Invalid Country"
         }
         if (this.isAdmin){
-            return "Only staff can create new contacts"
+            return "Only Users can create new contacts"
         }
 
         let userContact = new Contact(fullname, country)
@@ -136,7 +131,7 @@ class User {
 
     readContacts(){
         if (this.isAdmin){
-            return "Only staff can access contacts"
+            return "Only Users can access contacts"
         }
         return this.contacts
     }
@@ -152,7 +147,7 @@ class User {
 
     updateContact(ID, parameter, newValue){
         if (this.isAdmin){
-            return "Only staff can access contacts"
+            return "Only Users can access contacts"
         }
 
         let [index, result] = this.findContact(ID)
@@ -161,13 +156,13 @@ class User {
             return "Contact Not Found"
         }
 
-        let modifiedContact = this.contacts[index].updateContact(ID, parameter, newValue)
+        let modifiedContact = this.contacts[index].updateContact(parameter, newValue)
         return modifiedContact
     }
 
     deleteContact(ID){
         if (this.isAdmin){
-            return "Only staff can access contacts"
+            return "Only Users can access contacts"
         }
         let [index, result] = this.findContact(ID)
         if (!result){
@@ -180,7 +175,7 @@ class User {
 
     newContactInfo(ID, infoType, infoValue){
         if (this.isAdmin){
-            return "Only staff can access Contacts-Info"
+            return "Only Users can access Contacts-Info"
         }
 
         let [index, result] = this.findContact(ID)
@@ -192,22 +187,21 @@ class User {
         return infoObj
     }
 
-
-    readContactInfo(){
+    getAllInfo(ID){
         if (this.isAdmin){
-            return "Only staff can access Contacts-Info"
+            return "Only Users can access Contacts-Info"
         }
 
-        // let [index, result] = this.findContact(ID)
-        // if (!result){
-        //     return "Contact Not Found"
-        // }
-        return this.contactInfo
+        let [index, result] = this.findContact(ID)
+        if (!result){
+            return "Contact Not Found"
+        }
+        return this.contacts[index].contactInfo
     }
 
     updateContactInfo(ID, infoID, infoType, infoValue){
         if (this.isAdmin){
-            return "Only staff can access Contacts-Info"
+            return "Only Users can access Contacts-Info"
         }
 
         let [index, result] = this.findContact(ID)
@@ -220,7 +214,7 @@ class User {
 
     deleteContactInfo(ID, infoID){
         if (this.isAdmin){
-            return "Only staff can access Contacts-Info"
+            return "Only Users can access Contacts-Info"
         }
 
         let [index, result] = this.findContact(ID)
@@ -288,7 +282,7 @@ console.log("read user before updation: ");
 console.log(admin.getAllUsers());
 
 //update user
-let updateuser3 = admin.updateUser(3, "fullname", "def qwerty")
+let updateuser3 = admin.updateUser(3, "fullname", "abc def")
 console.log("read user after updation:");
 console.log(admin.getAllUsers());
 
@@ -301,15 +295,15 @@ console.log(admin.getAllUsers());
 console.log("Create Contact:");
 console.log(user1.newContact("Siddhi Manjrekar contact", "India"));
 console.log(user1.newContact("Suhas Manjrekar contact", "Australia"));
-console.log(user1.newContact("Swati Manjrekar contact", "Australia"));
+console.log(user1.newContact("Swati Manjrekar contact", "Srilanka"));
 
 //Read contact
 console.log("Read Contact before updation:");
 console.log(user1.readContacts());
 
 //Update contact
-console.log("Update Contact after updation:");
-console.log(user1.updateContact(1, "country", "Srilanka")); //-----------------------------------
+console.log("Read Contact after updation:");
+console.log(user1.updateContact(1, "fullname", "zxcvb asdf")); 
 
 //Delete contact
 console.log(user1.deleteContact(2));
@@ -323,15 +317,27 @@ console.log(user1.newContactInfo(1, "email", "suhas@gmail.com"));
 
 //Read contact info
 console.log("Read contact info before updation:");
-console.log(user1.readContactInfo());
+console.log(user1.getAllInfo(0));
+console.log(user1.getAllInfo(1));
 
 //Update contact info
-// console.log("Read contact info after updation:");
-// console.log(user1.updateContactInfo(0, 0, "email", "siddhi@gmail.com"));-----------------------------
+console.log("Read contact info after updation:");
+console.log(user1.updateContactInfo(0, 0, "infoValue", "0987654321"));
+console.log(user1.updateContactInfo(1, 1, "infoValue", "suhasmanjrekar@gmail.com"));
 
 //Delete contact info
-// console.log(user1.deleteContactInfo(0, 0));
-// console.log("Read contact info after deletion:");
-// console.log(user1.getAllInfo(0));
+console.log(user1.deleteContactInfo(0, 1));
+console.log("Read contact info after deletion:");
+console.log(user1.getAllInfo(0));
 
-// console.log("info by Id", user1.getContactInfoByID(1, 2));
+//Get user by ID
+console.log("Get user by ID:");
+console.log(admin.getUserByID(1));
+
+//get contact by ID
+console.log("Get contact by ID:");
+console.log(user1.getContactByID(1));
+
+//get contact info by ID
+console.log("Get contact info by ID:");
+console.log(user1.getContactInfoByID(0, 0));
