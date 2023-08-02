@@ -2,19 +2,20 @@ const ContactInfo = require("./ContactInfo")
 
 class Contact {
     static contactID = 0
-    constructor(contactName, country){
+    constructor(fullname, country){
         this.ID = Contact.contactID++
-        this.contactName = contactName
+        this.fullname = fullname
         this.country = country
+        this.contactInfo = []
     }
 
     updateContact (parameter, newValue){
         switch (parameter){
-            case "contactName":
+            case "fullname":
                 if (typeof(newValue) != 'string'){
                     return "Invalid Name"
                 }
-                this.contactName = newValue
+                this.fullname = newValue
                 return this
             case "country":
                 if (typeof(country) != 'string'){
@@ -24,7 +25,6 @@ class Contact {
                 return this
             default:
                 return "Invalid Parameter"
-                
         }
     }
 
