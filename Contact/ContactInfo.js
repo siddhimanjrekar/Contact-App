@@ -16,7 +16,7 @@ class ContactInfo {
                 this.infoType = newValue
                 return this
             case "infoValue":
-                if (typeof(newValue) != 'string'||typeof(newValue) != 'number'){
+                if (typeof(newValue) != 'string'){
                     return "Invalid Type"
                 }
                 this.infoValue = newValue
